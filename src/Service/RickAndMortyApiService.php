@@ -7,19 +7,25 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class RickAndMortyApiService
 {
     private $client;
-    private const API_BASE = 'https://rickandmortyapi.com/api';
 
     public function __construct(HttpClientInterface $client)
     {
         $this->client = $client;
     }
 
-    public function getCharacters(int $page = 1): array
+    public function getCharacters(int $page = 1, ?string $name = null): array
     {
         $url = "https://rickandmortyapi.com/api/character?page={$page}";
 
-        $response = $this->client->request('GET', $url);
-        return $response->toArray();
+        if ($name) {
+            $url .= "&name=" . urlencode($name);
+        }
+        try {
+            $response = $this->client->request('GET', $url);
+            return $response->toArray();
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
     public function getEpisodeNames(array $episodeUrls): array

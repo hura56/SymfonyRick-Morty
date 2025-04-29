@@ -1,39 +1,61 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Lista postaci{% endblock %}
+{% block title %}Lista postaci
+{% endblock %}
 
 {% block body %}
-<h1>Postacie z Rick and Morty</h1>
+	<div>
+		<img src="{{ asset('images/nav.png') }}" alt="Rick and Morty Logo" class="header-logo">
+		<form class="input-form" method="get" action="{{ path('character_list') }}">
+			<input type="text" name="name" value="{{ name }}" id="searchInput" placeholder="Szukaj po imieniu..." oninput="debounceSearch()"/>
+			<button type="button" id="clearSearch" style="display: none;" onclick="clearSearchInput()">×</button>
+			<button type="submit" style="display: none;"></button>
+		</form>
 
-<div style="display: flex; flex-wrap: wrap; gap: 20px;">
-    {% for character in characters %}
-        <div class="characterCard">
-            <img src="{{ character.image }}" alt="{{ character.name }}" width="150"/>
-            <h3>{{ character.name }}</h3>
-        </div>
-    {% endfor %}
-</div>
-<div style="margin-top: 20px;">
-    <nav>
-        <ul style="list-style: none; display: flex; gap: 10px; padding: 0;">
-            {% if currentPage > 1 %}
-                <li><a href="{{ path('character_list', { page: currentPage - 1 }) }}">← Poprzednia</a></li>
-            {% endif %}
+		<div class="main-div">
+			{% for character in characters %}
+				<div class="character-card">
+					<div class="character-image">
+						<img src="{{ character.image }}" alt="{{ character.name }}">
+					</div>
+					<div class="character-info">
+						<h3>{{ character.name }}</h3>
+						<h4 class="episodes">Odcinki:</h4>
+						<ul class="episode-list">
+							{% for episode in character.episodes %}
+								<li>{{ episode }}</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+		<div class="pagination-container" style="margin-top: 20px;">
+			<nav class="pagination-nav">
+				<ul class="pagination-list">
+					{% if currentPage > 1 %}
+						<li class="pagination-item">
+							<a href="{{ path('character_list', { page: currentPage - 1, name: name }) }}" class="pagination-link pagination-prev">← Poprzednia</a>
+						</li>
+					{% endif %}
 
-            {% for i in 1..totalPages %}
-                <li>
-                    {% if i == currentPage %}
-                        <strong>{{ i }}</strong>
-                    {% else %}
-                        <a href="{{ path('character_list', { page: i }) }}">{{ i }}</a>
-                    {% endif %}
-                </li>
-            {% endfor %}
+					{% for i in 1..totalPages %}
+						<li class="pagination-item">
+							{% if i == currentPage %}
+								<span class="pagination-current">{{ i }}</span>
+							{% else %}
+								<a href="{{ path('character_list', { page: i, name: name }) }}" class="pagination-link">{{ i }}</a>
+							{% endif %}
+						</li>
+					{% endfor %}
 
-            {% if currentPage < totalPages %}
-                <li><a href="{{ path('character_list', { page: currentPage + 1 }) }}">Następna →</a></li>
-            {% endif %}
-        </ul>
-    </nav>
-</div>
+					{% if currentPage < totalPages %}
+						<li class="pagination-item">
+							<a href="{{ path('character_list', { page: currentPage + 1, name: name }) }}" class="pagination-link pagination-next">Następna →</a>
+						</li>
+					{% endif %}
+				</ul>
+			</nav>
+		</div>
+	</div>
 {% endblock %}
