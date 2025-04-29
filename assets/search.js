@@ -1,9 +1,6 @@
 let debounceTimer;
 const searchInput = document.getElementById('searchInput');
 const clearSearchBtn = document.getElementById('clearSearch');
-console.log('====================================');
-console.log(clearSearchBtn);
-console.log('====================================');
 
 function debounceSearch() {
     clearTimeout(debounceTimer);

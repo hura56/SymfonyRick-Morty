@@ -11,7 +11,7 @@ use Symfony\Component\HttpClient\HttpClient;
 
 class CharacterController extends AbstractController
 {
-    #[Route('/characters', name: 'character_list')]
+    #[Route('/', name: 'character_list')]
     public function index(Request $request, RickAndMortyApiService $apiService): Response
     {
         $page = $request->query->getInt('page', 1);
